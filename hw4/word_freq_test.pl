@@ -38,16 +38,20 @@ test(sorted) :-
     sorted(["only"-1, "test"-2], Sorted),
     Sorted == ["test"-2, "only"-1].
 
-test(word_frequencies_output, [setup(
-    (
+test(word_frequencies_output,
+     [ setup((
         open('input.txt', write, S1),
         write(S1, 'This is a test, only a test.'),
         close(S1),
         open('tmp_stop_words.txt', write, S2),
         write(S2, 'a,is,the'),
         close(S2)
-    )
-), true]) :-
+       )),
+       cleanup((
+        delete_file('input.txt'),
+        delete_file('tmp_stop_words.txt')
+       ))
+     ]) :-
     word_frequencies('input.txt', 'tmp_stop_words.txt').
 
 :- end_tests(word_freq_test).
