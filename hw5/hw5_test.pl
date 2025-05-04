@@ -1,9 +1,11 @@
-:- begin_tests(lane_hierarchy).
+:- use_module(library(plunit)).
+
+:- begin_tests(hw5_test).
 
 :- dynamic instance/2.
 :- dynamic child_of/2.
 
-:- consult('hw5.pl').  % Replace with actual filename if in separate file
+:- consult('hw5.pl').
 
 % --- Setup & Teardown ---
 setup :-
@@ -12,7 +14,7 @@ setup :-
 
 % --- Test Instance Creation ---
 test(new_instance_success, [setup(setup)]) :-
-    new_instance(i1, stage),
+    once(new_instance(i1, stage)),
     instance(i1, stage).
 
 test(new_instance_fail_abstract_class, [fail, setup(setup)]) :-
@@ -20,16 +22,16 @@ test(new_instance_fail_abstract_class, [fail, setup(setup)]) :-
 
 % --- Test Add Child Valid ---
 test(add_valid_child_same_class, [setup(setup)]) :-
-    new_instance(p1, stage),
-    new_instance(c1, stage),
+    once(new_instance(p1, stage)),
+    once(new_instance(c1, stage)),
     add_child(p1, c1),
     child_of(c1, p1).
 
 % --- Test Children Retrieval ---
 test(children_list, [setup(setup)]) :-
-    new_instance(p2, stage),
-    new_instance(c2a, stage),
-    new_instance(c2b, stage),
+    once(new_instance(p2, stage)),
+    once(new_instance(c2a, stage)),
+    once(new_instance(c2b, stage)),
     add_child(p2, c2a),
     add_child(p2, c2b),
     children(p2, L),
@@ -39,11 +41,11 @@ test(children_list, [setup(setup)]) :-
 
 % --- Test Descendants ---
 test(descendants_deep, [setup(setup)]) :-
-    new_instance(s1, stage),
-    new_instance(s2, stage),
-    new_instance(s3, stage),
-    add_child(s1, s2),
-    add_child(s2, s3),
+    once(new_instance(s1, stage)),
+    once(new_instance(s2, stage)),
+    once(new_instance(s3, stage)),
+    once(add_child(s1, s2)),
+    once(add_child(s2, s3)),
     descendants(s1, D),
     sort(D, Sorted),
     sort([s2, s3], Sorted).
@@ -71,16 +73,16 @@ test(add_child_already_has_parent, [fail, setup(setup)]) :-
 
 % --- Test Valid Children ---
 test(valid_children_true, [setup(setup)]) :-
-    new_instance(p5, swimlane),
-    new_instance(c4, swimlane),
-    new_instance(c5, swimlane),
-    add_child(p5, c4),
-    add_child(p5, c5),
+    once(new_instance(p5, swimlane)),
+    once(new_instance(c4, swimlane)),
+    once(new_instance(c5, swimlane)),
+    once(add_child(p5, c4)),
+    once(add_child(p5, c5)),
     valid_children(p5).
 
 test(valid_children_empty, [setup(setup)]) :-
-    new_instance(p6, stage),
+    once(new_instance(p6, stage)),
     valid_children(p6).
 
-:- end_tests(lane_hierarchy).
+:- end_tests(hw5_test).
 

@@ -77,7 +77,7 @@ valid_children(Instance) :-
     children(Instance, Children),
     (Children == [] -> true;
      get_class_list(Children, Classes),
-     list_to_set(Classes, [SingleClass])).
+     list_to_set(Classes, [_])).
 
 get_class_list([], []).
 get_class_list([H|T], [C|CT]) :-
