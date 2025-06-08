@@ -5,30 +5,44 @@ import (
 	"testing"
 )
 
-func TestSingleThread(t *testing.T) {
-	_ = singleThread()
+func BenchmarkSingleThread(b *testing.B) {
+	for b.Loop() {
+		singleThread()
+	}
 }
 
-func TestWorkerPool3(t *testing.T) {
-	_ = workerPool(3)
+func BenchmarkWorkerPool3(b *testing.B) {
+	for b.Loop() {
+		workerPool(3)
+	}
 }
 
-func TestWorkerPool5(t *testing.T) {
-	_ = workerPool(5)
+func BenchmarkWorkerPool5(b *testing.B) {
+	for b.Loop() {
+		workerPool(5)
+	}
 }
 
-func TestWorkerPool10(t *testing.T) {
-	_ = workerPool(10)
+func BenchmarkWorkerPool10(b *testing.B) {
+	for b.Loop() {
+		workerPool(10)
+	}
 }
 
-func TestWorkerPool100(t *testing.T) {
-	_ = workerPool(100)
+func BenchmarkWorkerPool100(b *testing.B) {
+	for b.Loop() {
+		workerPool(100)
+	}
 }
 
-func TestWorkerPool1000(t *testing.T) {
-	_ = workerPool(1000)
+func BenchmarkWorkerPool1000(b *testing.B) {
+	for b.Loop() {
+		workerPool(1000)
+	}
 }
-func TestWorkerPoolNumCpu(t *testing.T) {
+func BenchmarkWorkerPoolNumCpu(b *testing.B) {
 	n := runtime.NumCPU()
-	_ = workerPool(n)
+	for b.Loop() {
+		workerPool(n)
+	}
 }
