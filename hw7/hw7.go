@@ -56,19 +56,12 @@ type Input struct {
 	py int
 }
 
-type Output struct {
-	px  int
-	py  int
-	val color.Color
-}
-
 func workerPool(n int) *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	inputChan := make(chan Input, height)
-	outputChan := make(chan Output, height)
 
-	worker := func(jobs <-chan Input, results chan<- Output, wg *sync.WaitGroup) {
+	worker := func(jobs <-chan Input, wg *sync.WaitGroup) {
 		defer wg.Done()
 		for j := range jobs {
 			py := j.py
@@ -79,7 +72,7 @@ func workerPool(n int) *image.RGBA {
 				z := complex(x, y)
 
 				// Image point (px, py) represents complex value z.
-				results <- Output{px: px, py: py, val: mandelbrot(z)}
+				img.Set(px, py, mandelbrot(z))
 			}
 		}
 	}
@@ -87,27 +80,14 @@ func workerPool(n int) *image.RGBA {
 	var wg sync.WaitGroup
 	wg.Add(n)
 	for range n {
-		go worker(inputChan, outputChan, &wg)
+		go worker(inputChan, &wg)
 	}
-
-	var resWg sync.WaitGroup
-	resWg.Add(1)
-	// collect results in a separate goroutine
-	go func(results <-chan Output, wg *sync.WaitGroup) {
-		defer wg.Done()
-		for r := range outputChan {
-			img.Set(r.px, r.py, r.val)
-		}
-	}(outputChan, &resWg)
 
 	for py := range height {
 		inputChan <- Input{py: py}
 	}
 	close(inputChan)
 	wg.Wait()
-	close(outputChan)
-
-	resWg.Wait()
 
 	return img
 }

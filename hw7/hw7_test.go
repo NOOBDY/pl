@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"runtime"
+	"testing"
+)
 
 func TestSingleThread(t *testing.T) {
 	_ = singleThread()
@@ -24,4 +27,8 @@ func TestWorkerPool100(t *testing.T) {
 
 func TestWorkerPool1000(t *testing.T) {
 	_ = workerPool(1000)
+}
+func TestWorkerPoolNumCpu(t *testing.T) {
+	n := runtime.NumCPU()
+	_ = workerPool(n)
 }
